@@ -1,0 +1,91 @@
+j <- read.table("jelly.txt", header = TRUE)
+jtank11<-read.table("jellyt11.txt", header = TRUE)
+
+summary(j$weight)
+par(mfrow=c(1,2))
+hist(j$weight)
+
+
+barplot(j$weight[j$tank=="1" ])
+barplot(j$weight[j$tank=="2"])
+
+
+w<- j$weight[$var=="no"]
+plot(w)
+
+boxplot(v$weight[v$var=="sa"],v$weight[v$var=="no"])
+
+
+par(mfrow=c(2,2))
+require(ggplot2)
+
+j$tank <- as.factor(j$tank)
+ggplot (data = j, aes(x = week, y = weight, group = tank, colour = tank))+
+  geom_point()+
+  labs(x = 'time (weeks)', y = 'weight(g)')+
+  geom_smooth(method='lm', formula= y~x)+
+  scale_colour_brewer(palette = 'Dark2')
+
+
+fit1 <- lm (weight~week * tank, data = j) #function
+
+
+anova(fit1)
+summary(fit1)
+
+
+
+require(ggplot2)
+
+j$tank <- as.factor(j$tank)
+ggplot (data = j, aes(x = week, y = diameter, group = tank, colour = tank))+
+  geom_point() + 
+  labs(x = 'Time (Weeks)', y = 'diameter (cm)') +
+  geom_smooth(method = 'lm', formula = y ~ x) +
+  scale_colour_brewer(palette = 'Dark2') 
+
+
+
+fit2 <- lm (diameter~week * tank, data = j) #function
+
+anova(fit2)
+summary(fit2)
+
+plot(jtank$tankprice,jtank$litres, col= "blue",xlab="Aquarium price (£)", ylab="Aquarium capacity (L)", pch=19, bty="l")
+f<- lm(litres~tankprice, data = jtank)
+abline(f, col="red")
+
+
+citation()
+
+install.packages("hrbrthemes")  # Install the package if you haven't already
+library(hrbrthemes) 
+
+library(ggplot2)
+library(hrbrthemes)
+
+cite_packages()
+
+jtank11$gadgets <- as.factor(jtank11$gadgets)
+
+
+fit3 <- lm (Price~Capacity * gadgets, data = jtank11) #function
+anova(fit3)
+summary(fit3)
+plot(fit3)
+
+Capacity<- log(jtank11$litres)
+Price<- log(jtank11$tankprice)
+
+lm_model_gadget1 <- lm(Price ~ Capacity, data = subset(jtank11, gadgets == "gadget1"))
+lm_model_gadget2 <- lm(Price ~ Capacity, data = subset(jtank11, gadgets == "gadget2"))
+lm_model_gadget3 <- lm(Price ~ Capacity, data = subset(jtank11, gadgets == "gadget3"))
+
+
+ggplot(data = jtank11, aes(x = Capacity, y = Price, color = factor(gadgets))) + 
+  geom_point(size = 2) +
+  geom_smooth(method = "lm", aes(group = gadgets), se = F) +
+  xlab("Log Capacity (litres)") +
+  ylab("Log Price per litre (£)") +
+  scale_color_manual(values=c('#e28413','#0c1618','#00a6ed'))+
+  theme_ipsum()
